@@ -10,6 +10,8 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { zstdCompressSync } from 'node:zlib'
 
+import { ensureStubs } from './stubs.mjs'
+
 const here = dirname(fileURLToPath(import.meta.url))
 
 // ---- the package manifest must stay BOM-free and parseable ----------------
@@ -67,8 +69,9 @@ writeFileSync(logPath, Buffer.concat([
   zstdCompressSync(Buffer.from(events.map((event) => JSON.stringify(event)).join('\n') + '\n')),
 ]))
 
-// ---- copy the real host bundle next to the stub packages ------------------
-// Bare imports (`@deepseek-ai/dsh-credentials`, …) must resolve.
+// ---- copy the real host bundle next to the generated stub packages --------
+// Bare imports (`@deepseek-ai/dsh-credentials`, …) must resolve: stubs.mjs writes them.
+ensureStubs()
 copyFileSync(join(here, '..', 'lib', 'index.js'), join(here, 'plugin.mjs'))
 const { apply } = await import(`./plugin.mjs?revision=${Date.now()}`)
 

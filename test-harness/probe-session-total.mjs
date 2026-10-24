@@ -10,7 +10,10 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { zstdDecompressSync } from 'node:zlib'
 
+import { ensureStubs } from './stubs.mjs'
+
 const here = dirname(fileURLToPath(import.meta.url))
+ensureStubs()
 copyFileSync(join(here, '..', 'lib', 'index.js'), join(here, 'plugin.mjs'))
 const { apply } = await import(`./plugin.mjs?probe=${Date.now()}`)
 
