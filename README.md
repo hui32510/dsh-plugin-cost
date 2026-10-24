@@ -150,20 +150,29 @@
 
 ## 安装 / 重新应用
 
-profile 的 `package.json` 里已经把它声明为本地 `link:` 依赖：
+**新机器 / 重装系统后一条命令恢复**（把本仓库链接进 DSH profile，然后重启）：
+
+```powershell
+# 在本仓库根执行；脚本会：写 profile 的 link 依赖 + 建 node_modules junction
+.\install.ps1
+# 执行策略受限时：
+powershell -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+`install.ps1` 等价于手动维护 profile 的 `package.json`：
 
 ```json
-"dependencies": { "dsh-cost": "link:C:/Users/hui/Documents/deepseek-harness/default-workspace/plugins/dsh-cost" },
+"dependencies": { "dsh-cost": "link:<本仓库路径>" },
 "dsh": { "profile": { "bundles": ["…", "dsh-cost"] } }
 ```
 
-如果 `node_modules/dsh-cost` 还是普通副本（不是指向本目录的链接），改完 `lib/` 后执行：
+如果 `node_modules/dsh-cost` 已经是普通副本（不是指向本目录的链接），改完 `lib/` 后执行：
 
 ```powershell
 pwsh -File .\apply.ps1
 ```
 
-然后重启 DSH。若某次 `pnpm install` 把它变成了链接，`apply.ps1` 会自动跳过。
+并重启 DSH。若某次 `pnpm install` 把它变成了链接，`apply.ps1` 会自动跳过。
 
 > ⚠️ 改 `package.json` 千万别写成**带 BOM 的 UTF-8**：Windows PowerShell 的 `Set-Content -Encoding utf8`
 > 默认会加 BOM，宿主解析不了这个 JSON，整个包（宿主路由 + 客户端芯片）会**静默**加载失败——界面上什么都不显示，
@@ -229,6 +238,17 @@ git tag
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\snapshot.ps1
 ```
+
+## 发布到 GitHub
+
+仓库可以整体推到你自己的 GitHub 账号（兼做异地备份，重装系统后 `git clone` 即可恢复）：
+
+```powershell
+# 先在 GitHub 建一个空仓库（不要勾 README / .gitignore / license）
+.\publish.ps1 -Name "你的名字" -Email "你的邮箱" -GitHubUser "你的GitHub用户名" -Push
+```
+
+细节（作者重写、tag、`-SkipAuthorRewrite`、恢复流程）见 [`PUBLISHING.md`](./PUBLISHING.md)。
 
 ## 许可
 

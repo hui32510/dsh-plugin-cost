@@ -4,6 +4,14 @@
   "description": "DeepSeek Harness balance + cost chip: account balance, the last turn's or the whole conversation's estimated cost, and the peak/off-peak countdown, rendered in the composer's statistic row (and on the empty new-chat screen).",
   "license": "MIT",
   "author": "hui",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GITHUB_OWNER/dsh-cost.git"
+  },
+  "homepage": "https://github.com/GITHUB_OWNER/dsh-cost#readme",
+  "bugs": {
+    "url": "https://github.com/GITHUB_OWNER/dsh-cost/issues"
+  },
   "contributors": [
     "Andre Goncalves (original dsh-balance)"
   ],
