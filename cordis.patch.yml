@@ -1,0 +1,8 @@
+# dsh-cost bundle layer.
+#
+# Applied when a profile lists this package in `dsh.profile.bundles`. The row
+# references the package by its specifier so Node resolution finds the installed
+# code; the plugin's internal Cordis name matches that specifier.
+- insert:
+    - id: dsh-cost
+      name: "dsh-cost"
