@@ -104,6 +104,24 @@ routes.get('/plugins/balance-usage')({ method: 'GET', url: '/plugins/balance-usa
 assert.equal(body.ok, false)
 assert.equal(body.error, 'session-not-found')
 
+// ---- a turn straddling the billing windows is priced per event -----------
+const peakTime = Date.UTC(2026, 9, 20, 2, 0, 0)   // Tuesday 02:00Z — peak
+const offTime = Date.UTC(2026, 9, 20, 12, 0, 0)   // Tuesday 12:00Z — off-peak
+const mixedEvents = [
+  { type: 'turn/start', time: peakTime, data: { turn: 1 } },
+  { type: 'assistant/message', time: peakTime, data: { turn: 1, message: { source: { provider: 'deepseek-account', model: 'deepseek-flash' } }, usage: { inputTokens: 1_000_000 } } },
+  { type: 'assistant/message', time: offTime, data: { turn: 1, message: { source: { provider: 'deepseek-account', model: 'deepseek-flash' } }, usage: { inputTokens: 1_000_000 } } },
+  { type: 'turn/end', time: offTime, data: { turn: 1 } },
+]
+const mixedSession = { seq: mixedEvents.length, eventAt: (i) => mixedEvents[i] }
+ctx.get = (name) => (name === 'sessions' ? { get: (id) => (id === 'mixed-1' ? mixedSession : id === 'live-1' ? session : undefined) } : undefined)
+body = undefined
+routes.get('/plugins/balance-usage')({ method: 'GET', url: '/plugins/balance-usage?session=mixed-1' }, res)
+assert.equal(body.usage.estimatedCost, 3, '1M input at peak (¥2) + 1M at off-peak (¥1)')
+assert.equal(body.usage.peak, false, 'the LAST billed event was off-peak')
+assert.equal(body.session.estimatedCost, 3, 'the conversation total must use the same rule')
+console.log('mixed-window turn cost:', body.usage.estimatedCost)
+
 // ---- whole-conversation spend --------------------------------------------
 body = undefined
 routes.get('/plugins/balance-usage')({ method: 'GET', url: '/plugins/balance-usage?session=live-1' }, res)

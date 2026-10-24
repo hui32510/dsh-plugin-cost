@@ -1,6 +1,6 @@
 {
   "name": "dsh-cost",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "DeepSeek Harness balance + cost chip: account balance, the last turn's or the whole conversation's estimated cost, and the peak/off-peak countdown, rendered in the composer's statistic row (and on the empty new-chat screen).",
   "license": "MIT",
   "author": "hui",

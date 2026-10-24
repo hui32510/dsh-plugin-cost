@@ -15,6 +15,7 @@ const loaders = []
 const styles = []
 globalThis.document = {
   querySelector: () => null,
+  querySelectorAll: () => [],
   createElement: () => ({ dataset: {}, set textContent(v) { this._css = v }, get textContent() { return this._css } }),
   head: { appendChild: (el) => styles.push(el) },
 }
@@ -71,6 +72,11 @@ const scope = {
 }
 moduleExports.apply({ inject: (deps, fn) => fn(scope) })
 assert.equal(styles.length, 1, 'the stylesheet must install once')
+assert.equal(typeof globalThis.window.__dshCostProbe, 'function', 'apply() must install the diagnostics probe')
+const probe = globalThis.window.__dshCostProbe()
+assert.equal(probe.version, '0.8.3')
+assert.equal(probe.heroDock, false)
+console.log('probe ok:', JSON.stringify(probe))
 const css = styles[0].textContent
 for (const marker of ['dshcost_menu', 'dshcost_bars', 'dshcost_sbars', 'dshcost_popchart', 'dshcost_stats', 'dshcost_avg']) {
   assert.ok(css.includes(marker), `stylesheet is missing ${marker}`)
@@ -247,6 +253,8 @@ overrides = { 0: balance, 1: usage, 2: false, 3: null, 4: 'bars', 5: 'turn', 6: 
 const heroMenuText = textOf(heroMenu)
 assert.ok(heroMenuText.includes('样式') && heroMenuText.includes('消费显示'), 'the hero chip must keep the right-click menu')
 assert.ok(heroMenuText.includes('显示本轮消耗'), 'the per-turn option label is missing')
+assert.ok(heroMenuText.includes('花费显示将在对话开始后生效'), 'the empty-conversation menu must explain the delayed cost readout')
+assert.ok(!menuText.includes('花费显示将在对话开始后生效'), 'a settled conversation must not show that note')
 console.log('hero menu ok')
 
 // a settled conversation owns the row: the hero chip must stay out of it

@@ -1,10 +1,5 @@
-# Keep the working tree's CRLF convention on checkout while storing LF in git,
-# so diffs stay readable and the prebuilt bundles keep their byte layout.
-* text=auto
+# Storage is LF; check out CRLF only for the generated JS bundles and the
+# Harness test scripts, which are written that way by their tooling.
+* text=auto eol=lf
 *.js text eol=crlf
 *.mjs text eol=crlf
-*.cjs text eol=crlf
-*.ps1 text eol=crlf
-*.md text eol=lf
-*.json text eol=lf
-*.yml text eol=lf

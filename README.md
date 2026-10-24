@@ -46,6 +46,7 @@
   - **显示本次对话总消耗**：`本次 ¥0.5231`，这条对话从第一轮到现在累计的估算花费（正在跑的那一轮也算在内）。
 
 选中立即生效，分别写入 `localStorage` 的 `dsh-cost/chart-style` 与 `dsh-cost/spend-mode`，刷新与重启后保持。
+**空对话里**菜单底部会多一行灰字「花费显示将在对话开始后生效」——那枚芯片本来就不显示金额，选了也不会立刻有变化。
 菜单是 DSH 菜单的材质（`--dsw-menu-surface-fill` + 40px 模糊、项高 34px、圆角 12px），子菜单在右侧放不下时向左、靠近窗口底部时向上展开。
 
 ## 详情浮层：左键点击才出现
@@ -89,6 +90,7 @@
 
 - 数据来源：`ctx.sessions.get(id)` 的实时事件流，取最后一个 `turn/end` 及其对应的 `turn/start`，累加该轮内所有 `assistant/message` 的 `data.usage`（`assistant/attempt` 的流式 usage 作为兜底）。
 - 计价：`(未缓存输入 × input + 缓存读 × cacheRead + 缓存写 × cacheWrite + 输出 × output) / 1e6`，空闲时段再 × 0.5。
+- 计价时间：**每个事件用自己的时间戳**判断峰谷（0.8.3 起），所以跨峰谷边界的一轮会分别按两种价格计，和「本次对话」「近 7 天」完全同一套规则。
 - 默认单价（CNY / 百万 token，**高峰价**）：`input 2`、`cacheRead 0.2`、`cacheWrite 2`、`output 3`。仅作估算，可按下面的方式覆盖。
 
 ## 本次对话总花费怎么算
@@ -214,6 +216,16 @@ node .\test-harness\probe-session-total.mjs 0   # 0 = 最新的会话日志
 
 这个插件是长期维护项目。改动记录、DSH 内部机制笔记、踩过的坑、验证清单与「开工清单」都在工作区根目录的
 [`plugin-cost.md`](../../plugin-cost.md) 里——下次开工先读它。
+
+这台机器上暂时没有 git（也无法联网安装），所以改动前先打一份快照：
+
+```powershell
+.\snapshot.ps1        # → <workspace>/work/snapshots/dsh-cost-<版本>-<时间>.zip
+# 若提示「在此系统上禁止运行脚本」：
+powershell -ExecutionPolicy Bypass -File .\snapshot.ps1
+```
+
+装好 git 后这段可以换成 `git init` + 每个版本一个 tag（`.gitignore` / `.gitattributes` 已经备好，见 plugin-cost.md 第 1 节）。
 
 ## 许可
 
