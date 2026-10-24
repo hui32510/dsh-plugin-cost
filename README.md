@@ -214,18 +214,21 @@ node .\test-harness\probe-session-total.mjs 0   # 0 = 最新的会话日志
 
 ## 维护
 
-这个插件是长期维护项目。改动记录、DSH 内部机制笔记、踩过的坑、验证清单与「开工清单」都在工作区根目录的
-[`plugin-cost.md`](../../plugin-cost.md) 里——下次开工先读它。
+这个插件是长期维护项目。改动记录、DSH 内部机制笔记、踩过的坑、验证清单与「开工清单」都在
+[`plugin-cost.md`](./plugin-cost.md) 里——下次开工先读它。
 
-这台机器上暂时没有 git（也无法联网安装），所以改动前先打一份快照：
+版本控制：本仓库就是 `plugins/dsh-cost`（git 2.56，基线 `v0.8.2`、当前 `v0.8.3`）：
 
 ```powershell
-.\snapshot.ps1        # → <workspace>/work/snapshots/dsh-cost-<版本>-<时间>.zip
-# 若提示「在此系统上禁止运行脚本」：
-powershell -ExecutionPolicy Bypass -File .\snapshot.ps1
+git log --oneline --decorate
+git tag
 ```
 
-装好 git 后这段可以换成 `git init` + 每个版本一个 tag（`.gitignore` / `.gitattributes` 已经备好，见 plugin-cost.md 第 1 节）。
+改动前若想额外留一份快照（可选），`.\snapshot.ps1` 仍可用；执行策略受限时：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\snapshot.ps1
+```
 
 ## 许可
 
