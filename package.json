@@ -6,11 +6,11 @@
   "author": "hui",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GITHUB_OWNER/dsh-cost.git"
+    "url": "git+https://github.com/hui32510/dsh-cost.git"
   },
-  "homepage": "https://github.com/GITHUB_OWNER/dsh-cost#readme",
+  "homepage": "https://github.com/hui32510/dsh-cost#readme",
   "bugs": {
-    "url": "https://github.com/GITHUB_OWNER/dsh-cost/issues"
+    "url": "https://github.com/hui32510/dsh-cost/issues"
   },
   "contributors": [
     "Andre Goncalves (original dsh-balance)"
