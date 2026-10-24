@@ -43,8 +43,8 @@
 先装好 DSH 桌面版。这个插件不走 npm，是直接从仓库链进 DSH 的 profile：
 
 ```powershell
-git clone https://github.com/hui32510/dsh-cost.git
-cd dsh-cost
+git clone https://github.com/hui32510/dsh-plugin-cost.git
+cd dsh-plugin-cost
 .\install.ps1
 ```
 
